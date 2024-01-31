@@ -1,18 +1,33 @@
+<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel Log App</title>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <title>React App</title>
 </head>
 
 <body>
-    <!-- Map will be rendered here -->
-    <div id="map"></div>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAz17ylZWguHrFWs5n05Q3aNpMdGbYXtbE&callback=initMap">
-    </script>
-    <script src="assets/js/main.js"></script>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <script>
+    function loadGoogleMapsScript() {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAkyntthEVNFhKJSJyWaUg4YeNXX1gv58c&libraries=maps&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+
+    // Load Google Maps API script
+    loadGoogleMapsScript();
+  </script>
 </body>
 
 </html>

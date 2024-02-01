@@ -8,16 +8,12 @@ const travelListSchema = new mongoose.Schema({
     description: {
         type: String,
     },
-    tags: {
-        type: [String],
-        enum: ['Favourites', 'Want to go', 'Have been']
-    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }
 })
 
-const TravelList = mongoose.model('TravelList', travelListSchema);
+const TravelList = mongoose.model('List', travelListSchema);
 
 module.exports = TravelList;

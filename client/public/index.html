@@ -1,4 +1,3 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,18 +15,17 @@
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
-  <script>
-    function loadGoogleMapsScript() {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAkyntthEVNFhKJSJyWaUg4YeNXX1gv58c&libraries=maps&callback=initMap`;
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
-    }
 
-    // Load Google Maps API script
-    loadGoogleMapsScript();
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIuxBMcKkqEuKFRKztTtkIWXX6gnt-Lf4&callback=initMap" async defer></script>
+  <script>
+    function initMap() {
+      var map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: -34.397, lng: 150.644 },
+        zoom: 8
+      });
+    }
   </script>
+  <div id="map" style="height: 400px; width: 100%;"></div>
 </body>
 
 </html>

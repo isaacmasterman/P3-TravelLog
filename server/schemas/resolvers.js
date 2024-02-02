@@ -1,4 +1,4 @@
-const { User, Location, TravelList, ListLocation } = require('../models/index');
+const { User, List } = require('../models/index');
 const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
@@ -7,42 +7,26 @@ const resolvers = {
             if (!context.user) {
                 throw AuthenticationError;
             }
-            return await User.find({}).populate({
-                path: 'travelLists',
-                populate: { path: 'locations' }
-            });
+            return await User.find({}).populate('lists');
         },
         user: async (parent, { userId }, context) => {
             if (!context.user) {
                 throw AuthenticationError;
             }
-            return await User.findById(userId).populate({
-                path: 'travelLists',
-                populate: { path: 'locations' }
-            });
+            return await User.findById(userId).populate('lists');
         },
-        // ... other queries ...
-
-        locations: async () => {
-            return await Location.find({});
+        lists: async () => {
+            return await List.find({});
         },
-        location: async (parent, { locationId }) => {
-            return await Location.findById(locationId);
+        list: async (parent, { listId }) => {
+            return await List.findById(listId);
         },
-        travelLists: async () => {
-            return await TravelList.find({}).populate('user').populate('locations');
-        },
-        travelList: async (parent, { listId }) => {
-            return await TravelList.findById(listId).populate('user').populate('locations');
-        },
-        listLocations: async () => {
-            return await ListLocation.find({}).populate('travelList').populate('location');
-        },
-        listLocation: async (parent, { listId, locationId }) => {
-            return await ListLocation.findOne({ travelList: listId, location: locationId })
-                                    .populate('travelList')
-                                    .populate('location');
-        },
+        me: async (parent, args, context) => {
+            if (context.user) {
+              return User.findOne({ _id: context.user._id }).populate('lists');
+            }
+            throw AuthenticationError;
+          },
     },
     Mutation: {
         createUser: async (parent, { username, email, password }) => {
@@ -63,14 +47,32 @@ const resolvers = {
                 throw AuthenticationError;
             }
 
-            const token = signToken({ email: user.email, username: user.username, userId: user._id });
+            const token = signToken( user );
             return { token, user };
         },
-        updateUser: async (parent, { userId, username, email }, context) => {
+        updateUser: async (parent, { username, email, password }, context) => {
             if (!context.user) {
                 throw AuthenticationError;
             }
-            return await User.findByIdAndUpdate(userId, { username, email }, { new: true });
+            let update = {};
+            if (username) update.username = username;
+            if (email) update.email = email;
+            if (newPassword) {
+                // Hash the new password before storing it
+                const saltRounds = 10; // Adjust salt rounds as needed
+                const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+                update.password = hashedPassword;
+            }
+            const userId = context.user.id;
+
+            // Update the user in the database
+            const updatedUser = await User.findByIdAndUpdate(userId, update, { new: true });
+
+            if (!updatedUser) {
+                throw new Error('User not found');
+            }
+
+            return updatedUser;
         },
         deleteUser: async (parent, { userId }, context) => {
             if (!context.user) {
@@ -78,65 +80,63 @@ const resolvers = {
             }
             return await User.findByIdAndDelete(userId);
         },
-        createLocation: async (parent, { name, description, rating, addedByUserId }, context) => {
+        addLocation: async (parent, { listId, locationName }, context) => {
             if (!context.user) {
                 throw AuthenticationError;
             }
             if (rating < 0 || rating > 5) {
                 throw new Error("Rating must be between 0 and 5");
             }
-            return await Location.create({ name, description, rating, addedByUserId });
+            return List.findOneAndUpdate(
+                {listId},
+                {
+                    $addToSet: {
+                        locations: { locationName, locationDescription, locationRating }
+                    }
+                },
+                {
+                    new: true,
+                    runValidators: true,
+                }
+            );
         },
-        updateLocation: async (parent, { locationId, name, description, rating }, context) => {
+        deleteLocation: async (parent, { listId, locationId }, context) => {
             if (!context.user) {
                 throw AuthenticationError;
             }
-            if (rating < 0 || rating > 5) {
-                throw new Error("Rating must be between 0 and 5");
-            }
-            return await Location.findByIdAndUpdate(locationId, { name, description, rating }, { new: true });
+            return List.findOneAndUpdate(
+                { _id: listId },
+                {
+                  $pull: {
+                    locations: {
+                      _id: locationId,
+                    },
+                  },
+                },
+                { new: true }
+            );
         },
-        deleteLocation: async (parent, { locationId }, context) => {
+        createList: async (parent, { title, description }, context) => {
             if (!context.user) {
                 throw AuthenticationError;
             }
-            return await Location.findByIdAndDelete(locationId);
+            const list = List.create({ title, description });
+            await User.findOneAndUpdate(
+                { _id: context.user._id },
+                { $addToSet: { lists: list._id } }
+            );
+            return list;  
         },
-        createTravelList: async (parent, { userId, title, description }, context) => {
+        deleteList: async (parent, { listId }, context) => {
             if (!context.user) {
                 throw AuthenticationError;
             }
-            return await TravelList.create({ userId, title, description });
-        },
-        updateTravelList: async (parent, { listId, title, description }, context) => {
-            if (!context.user) {
-                throw AuthenticationError;
-            }
-            return await TravelList.findByIdAndUpdate(listId, { title, description }, { new: true });
-        },
-        deleteTravelList: async (parent, { listId }, context) => {
-            if (!context.user) {
-                throw AuthenticationError;
-            }
-            return await TravelList.findByIdAndDelete(listId);
-        },
-        createListLocation: async (parent, { listId, locationId, comments, datePlanned }, context) => {
-            if (!context.user) {
-                throw AuthenticationError;
-            }
-            return await ListLocation.create({ listId, locationId, comments, datePlanned });
-        },
-        updateListLocation: async (parent, { listId, locationId, comments, datePlanned }, context) => {
-            if (!context.user) {
-                throw AuthenticationError;
-            }
-            return await ListLocation.findOneAndUpdate({ listId, locationId }, { comments, datePlanned }, { new: true });
-        },
-        deleteListLocation: async (parent, { listId, locationId }, context) => {
-            if (!context.user) {
-                throw AuthenticationError;
-            }
-            return await ListLocation.findOneAndDelete({ listId, locationId });
+            const list = List.findOneAndDelete({_id: listId})
+            await User.findOneAndUpdate(
+                { _id: context.user._id },
+                {$pull: {lists: list._id}}
+            )
+            return list
         },
     },
 };

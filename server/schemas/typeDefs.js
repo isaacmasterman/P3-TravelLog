@@ -3,58 +3,50 @@ const typeDefs = `
         userId: ID!
         username: String!
         email: String!
-        locations: [ListLocation]
+        lists: [List]
     }
-  
-    type Location {
-        locationId: ID!
-        name: String!
-        description: String
-        rating: Int
-    }
-  
-    type TravelList {
+
+    type List {
         listId: ID!
         user: User!
-        title: String!
-        description: String
+        listTitle: String!
+        listDescription: String
         locations: [Location]
     }
-    
-    type ListLocation {
-        travelList: TravelList!
-        location: Location!
-        comments: String
-        datePlanned: String
+
+    type Location {
+        locationId: ID!
+        locationName: String!
+        locationDescription: String
+        locationRating: Int
     }
-    
+
+    type AuthPayload {
+        token: String!
+        user: User
+    }
+
     type Query {
         users: [User]
         user(userId: ID!): User
-        locations: [Location]
-        location(locationId: ID!): Location
-        travelLists: [TravelList]
-        travelList(listId: ID!): TravelList
-        listLocations: [ListLocation]
-        listLocation(listId: ID!, locationId: ID!): ListLocation
+        lists: [List]
+        list(listId: ID!): List
+        me: User
     }
-      
+
     type Mutation {
-        createUser(username: String!, email: String!, password: String!): User
-        updateUser(userId: ID!, username: String, email: String, password: String): User
+        createUser(username: String!, email: String!, password: String!): AuthPayload
+        updateUser(username: String, email: String, password: String): User
         deleteUser(userId: ID!): User
-      
-        createLocation(name: String!, description: String, rating: Int, addedByUserId: ID): Location
-        updateLocation(locationId: ID!, name: String, description: String, rating:Int): Location
-        deleteLocation(locationId: ID!): Location
-      
-        createTravelList(userId: ID!, title: String!, description: String): TravelList
-        updateTravelList(listId: ID!, title: String, description: String): TravelList
-        deleteTravelList(listId: ID!): TravelList
-      
-        createListLocation(listId: ID!, locationId: ID!, comments: String, datePlanned: String): ListLocation
-        updateListLocation(listId: ID!, locationId: ID!, comments: String, datePlanned: String): ListLocation
-        deleteListLocation(listId: ID!, locationId: ID!): ListLocation
+        login(email: String!, password: String!): AuthPayload
+
+        addLocation(name: String!, description: String, rating: Int, addedByUserId: ID): List
+        deleteLocation(locationId: ID!): List
+
+        createList(userId: ID!, title: String!, description: String): List
+        updateList(listId: ID!, title: String, description: String): List
+        deleteList(listId: ID!): List
+    
     }
 `;
 

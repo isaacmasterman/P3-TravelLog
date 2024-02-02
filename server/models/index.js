@@ -1,6 +1,4 @@
-const ListLocation = require('./ListLocation');
-const Location = require('./Location');
-const TravelList = require('./TravelList');
+const List = require('./List');
 const User = require('./User');
 
-module.exports = { ListLocation, Location, TravelList, User };
+module.exports = { List, User };

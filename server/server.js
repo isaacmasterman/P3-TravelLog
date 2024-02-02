@@ -1,4 +1,3 @@
-
 const express = require('express');
 const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
@@ -8,7 +7,7 @@ const { authMiddleware } = require('./utils/auth');
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 const app = express();
 const server = new ApolloServer({
   typeDefs,
@@ -45,11 +44,5 @@ const startApolloServer = async () => {
 };
 
 // Call the async function to start the server
-  startApolloServer();
-
-const authRoutes = require('./routes/authRoutes');
-
-require('dotenv').config();
-
-app.use('/api', authRoutes);
+startApolloServer();
 

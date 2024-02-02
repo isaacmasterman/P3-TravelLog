@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flex, Input, Button, Image, Center } from '@chakra-ui/react';
+import { Alert, AlertIcon, Image, Box, Flex, Input, Button, Text, Center } from '@chakra-ui/react';
 import TravelLogLogo from '../assets/Images/TravelLog_Logo.png';
 import { useNavigate } from 'react-router-dom';
 
@@ -60,14 +60,21 @@ const SignupPage = () => {
                 {error}
             </Alert>
         )}        
-        <Image src={TravelLogLogo} boxSize="200px" alt="Travel Log Logo" />
+        <Image 
+            src={TravelLogLogo} 
+            alt="Travel Log Logo" 
+            my="2"
+            w="100%"
+            maxW="600px"/>
         <Input 
             placeholder="Username"
             type="text" 
-            my="2" 
+            my="1" 
             bg="#FFFFFF" 
             borderColor="#292F33" 
-            borderRadius="md"
+            borderRadius="full"
+            w="100%"
+            maxW="400px"
             value={username}
             onChange={(e) => {
                 setUsername(e.target.value);
@@ -77,10 +84,12 @@ const SignupPage = () => {
         <Input
             placeholder="Email"
             type="email" 
-            my="2" 
+            my="1" 
             bg="#FFFFFF" 
             borderColor="#292F33" 
-            borderRadius="md"
+            borderRadius="full"
+            w="100%"
+            maxW="400px"
             value={email}
             onChange={(e) => {
                 setEmail(e.target.value);
@@ -90,10 +99,12 @@ const SignupPage = () => {
         <Input
             placeholder="Password" 
             type="password" 
-            my="2" 
+            my="1" 
             bg="#FFFFFF" 
             borderColor="#292F33" 
-            borderRadius="md"
+            borderRadius="full"
+            w="100%"
+            maxW="400px"
             value={password}
             onChange={(e) => {
                 setPassword(e.target.value);
@@ -103,7 +114,10 @@ const SignupPage = () => {
         <Button 
             bg="#292F33" 
             color="#EBEBEB" 
-            my="2" 
+            my="1" 
+            borderRadius="full"
+            w="100%"
+            maxW="400px"
             _hover={{ bg: "#898989" }} 
             onClick={ handleSubmit }>
                 Signup
@@ -111,9 +125,12 @@ const SignupPage = () => {
         <Button 
             bg="#292F33" 
             color="#EBEBEB" 
-            my="2" 
+            my="1" 
+            borderRadius="full"
+            w="100%"
+            maxW="400px"
             _hover={{ bg: "#898989" }} 
-            onClick={() => navigate('/login')}>
+            onClick={() => navigate('/')}>
                 Login
         </Button>
       </Flex>

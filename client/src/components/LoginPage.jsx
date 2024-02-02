@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Flex, Input, Button, Text, Center } from '@chakra-ui/react';
+import { Alert, AlertIcon, Image, Box, Flex, Input, Button, Text, Center } from '@chakra-ui/react';
 import TravelLogLogo from '../assets/Images/TravelLog_Logo.png';
 import { useNavigate } from 'react-router-dom';
 
@@ -57,14 +57,21 @@ const LoginPage = () => {
                 {error}
             </Alert>
         )}
-        <Image src={TravelLogLogo} boxSize="200px" alt="Travel Log Logo" />
+        <Image 
+            src={TravelLogLogo} 
+            alt="Travel Log Logo" 
+            my="2"
+            w="100%"
+            maxW="600px"/>
         <Input 
             placeholder="Username" 
             type="text"
-            my="2" 
+            my="1" 
             bg="#FFFFFF" 
             borderColor="#292F33" 
-            borderRadius="md"
+            borderRadius="full"
+            w="100%"
+            maxW="400px"
             value={username}
             onChange={(e) => {
                 setUsername(e.target.value);
@@ -74,10 +81,12 @@ const LoginPage = () => {
         <Input 
             placeholder="Password" 
             type="password" 
-            my="2" 
+            my="1" 
             bg="#FFFFFF" 
             borderColor="#292F33" 
-            borderRadius="md"
+            borderRadius="full"
+            w="100%"
+            maxW="400px"
             value={password}
             onChange={(e) => {
                 setPassword(e.target.value);
@@ -87,7 +96,10 @@ const LoginPage = () => {
         <Button 
             bg="#292F33" 
             color="#EBEBEB" 
-            my="2" 
+            my="1"
+            borderRadius="full"
+            w="100%"
+            maxW="400px" 
             _hover={{ bg: "#898989" }} 
             onClick={ handleLogin }>
                 Login
@@ -95,7 +107,10 @@ const LoginPage = () => {
         <Button 
             bg="#292F33" 
             color="#EBEBEB" 
-            my="2" 
+            my="1"
+            borderRadius="full"
+            w="100%"
+            maxW="400px" 
             _hover={{ bg: "#898989" }} 
             onClick={() => navigate('/signup')}>
                 Signup

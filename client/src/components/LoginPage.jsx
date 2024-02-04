@@ -1,119 +1,117 @@
 import React, { useState } from 'react';
-import { Alert, AlertIcon, Image, Box, Flex, Input, Button, Text, Center } from '@chakra-ui/react';
+import { Alert, AlertIcon, Image, Flex, Input, Button, Center } from '@chakra-ui/react';
 import TravelLogLogo from '../assets/Images/TravelLog_Logo.png';
 import { useNavigate } from 'react-router-dom';
+import { useMutation, gql } from '@apollo/client';
 
-// Import any other necessary components and hooks (authorisation)
+const LOGIN_MUTATION = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+      user {
+        username
+        email
+      }
+    }
+  }
+`;
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-  const [error, setError] = useState('');
+  const [errorMsg, setError] = useState('');
 
-  // Add function to handle form submission here
-  const handleLogin = async (e) => {
+  const [login, { loading, error }] = useMutation(LOGIN_MUTATION, {
+    onCompleted: (data) => {
+      localStorage.setItem('token', data.login.token);
+      navigate('/map'); // Adjust the navigation target as needed
+    },
+    onError: (error) => {
+      setError(error.message);
+    }
+  });
+
+  const handleLogin = (e) => {
     e.preventDefault();
   
-    // Validate inputs
-    if (!username.trim()) {
-        setError('Username cannot be empty.');
-        return;
-    } else if (!password.trim()) {
-        setError('Password cannot be empty.');
-        return;
+    if (!username.trim() || !password.trim()) {
+      setError('Username and password cannot be empty.');
+      return;
     }    
-  
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-  
-      const data = await response.json();
-      if (!response.ok) {
-        // Handle login error
-        return;
-      }
-  
-        // Store JWT received from the server
-        localStorage.setItem('token', data.token);
 
-        // Redirect to another page after successful signup
-        navigate('/map'); // Replace with desired route
-    } catch (error) {
-      // Handle network error
-    }
+    login({ variables: { email: username, password } });
   };
-  
 
   return (
     <Center bg="#EBEBEB" w="100vw" h="100vh">
       <Flex direction="column" align="center" justify="center">
         {error && (
-            <Alert status="error">
-                <AlertIcon />
-                {error}
-            </Alert>
+          <Alert status="error">
+            <AlertIcon />
+            {errorMsg || error.message}
+          </Alert>
         )}
         <Image 
-            src={TravelLogLogo} 
-            alt="Travel Log Logo" 
-            my="2"
-            w="100%"
-            maxW="600px"/>
+          src={TravelLogLogo} 
+          alt="Travel Log Logo" 
+          my="2"
+          w="100%"
+          maxW="600px"/>
         <Input 
-            placeholder="Username" 
-            type="text"
-            my="1" 
-            bg="#FFFFFF" 
-            borderColor="#292F33" 
-            borderRadius="full"
-            w="100%"
-            maxW="400px"
-            value={username}
-            onChange={(e) => {
-                setUsername(e.target.value);
-                setError('');
-            }}
+          placeholder="Username" 
+          type="text"
+          my="1" 
+          bg="#FFFFFF" 
+          borderColor="#292F33" 
+          borderRadius="full"
+          w="100%"
+          maxW="400px"
+          value={username}
+          onChange={(e) => {
+            setUsername(e.target.value);
+            setError('');
+          }}
         />
         <Input 
-            placeholder="Password" 
-            type="password" 
-            my="1" 
-            bg="#FFFFFF" 
-            borderColor="#292F33" 
-            borderRadius="full"
-            w="100%"
-            maxW="400px"
-            value={password}
-            onChange={(e) => {
-                setPassword(e.target.value);
-                setError('');
-            }}
+          placeholder="Password" 
+          type="password" 
+          my="1" 
+          bg="#FFFFFF" 
+          borderColor="#292F33" 
+          borderRadius="full"
+          w="100%"
+          maxW="400px"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError('');
+          }}
         />
         <Button 
-            bg="#292F33" 
-            color="#EBEBEB" 
-            my="1"
-            borderRadius="full"
-            w="100%"
-            maxW="400px" 
-            _hover={{ bg: "#898989" }} 
-            onClick={ handleLogin }>
-                Login
+          bg="#292F33" 
+          color="#EBEBEB" 
+          my="1"
+          borderRadius="full"
+          w="100%"
+          maxW="400px" 
+          _hover={{ bg: "#898989" }} 
+          onClick={handleLogin}
+          isLoading={loading}
+        >
+          Login
         </Button>
         <Button 
-            bg="#292F33" 
-            color="#EBEBEB" 
-            my="1"
-            borderRadius="full"
-            w="100%"
-            maxW="400px" 
-            _hover={{ bg: "#898989" }} 
-            onClick={() => navigate('/signup')}>
-                Signup
+          bg="#292F33" 
+          color="#EBEBEB" 
+          my="1"
+          borderRadius="full"
+          w="100%"
+          maxW="400px" 
+          _hover={{ bg: "#898989" }} 
+          onClick={() => navigate('/signup')}
+        >
+          Signup
         </Button>
       </Flex>
     </Center>

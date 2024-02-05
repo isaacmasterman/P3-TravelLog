@@ -8,7 +8,7 @@ import HomeMap from './components/HomeMap';
 
 // HTTP connection to the GraphQL API
 const httpLink = createHttpLink({
-  uri: '/graphql', // Adjust if your GraphQL endpoint differs
+  uri: 'http://localhost:4000/graphql',
 });
 
 // Middleware for setting the auth token with each request

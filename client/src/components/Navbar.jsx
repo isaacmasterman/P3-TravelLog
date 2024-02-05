@@ -9,6 +9,7 @@ const Navbar = () => {
       bg="#EBEBEB"
       px={4}
       h="80px" // Adjust the height as needed
+      w="100%"
       alignItems="center"
       justifyContent="space-between"
     >

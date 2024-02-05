@@ -1,34 +1,34 @@
 import React from 'react';
-import { Box, Image, Stack, Heading, Text, Divider, ButtonGroup, Button } from '@chakra-ui/react';
+import { Box, Image, Stack, Heading, Text, Divider, ButtonGroup, Button, useDisclosure } from '@chakra-ui/react';
+import { AddIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 
 const PlaceCard = ({ placeData }) => {
-  const { name, description, rating, photos } = placeData;
+  console.log("PlaceCard props:", placeData);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { name, description, photos } = placeData; // Assuming `placeData` has these fields
+
+  // Function to handle "Save" button action
+  const handleSave = () => {
+    console.log("Save action");
+    // Implement the save functionality
+  };
+
+  // Function to handle "Directions" button action
+  const handleDirections = () => {
+    console.log("Directions action");
+    // Implement the directions functionality (e.g., open Google Maps)
+  };
 
   return (
-    <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
+    <Box bg="#EBEBEB" p={5} shadow="md" borderWidth="1px">
       {photos && photos.length > 0 && (
-        <Image
-          src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photos[0].photo_reference}&key=AIzaSyDIuxBMcKkqEuKFRKztTtkIWXX6gnt-Lf4`}
-          alt={name}
-          borderRadius="lg"
-        />
+        <Image src={photos[0]} alt={name} />
       )}
-
-      <Stack mt="6" spacing="3">
-        <Heading size="md">{name}</Heading>
-        <Text>{description || 'No description available'}</Text>
-        {rating && <Text color="blue.600" fontSize="2xl">Rating: {rating}</Text>}
-      </Stack>
-
-      <Divider />
-
-      <ButtonGroup spacing="2">
-        <Button variant="solid" colorScheme="blue">
-          Buy now
-        </Button>
-        <Button variant="ghost" colorScheme="blue">
-          Add to cart
-        </Button>
+      <Heading fontSize="xl">{name}</Heading>
+      <Text mt={4}>{description || 'No description available'}</Text>
+      <ButtonGroup variant="outline" spacing="6" marginTop="4">
+        <Button leftIcon={<AddIcon />} onClick={handleSave}>Save</Button>
+        <Button rightIcon={<ExternalLinkIcon />} onClick={handleDirections}>Directions</Button>
       </ButtonGroup>
     </Box>
   );

@@ -19,7 +19,7 @@ export const LOGIN_USER = gql`
             token
             user {
                 userId
-                username
+                email
             }
         }
     }

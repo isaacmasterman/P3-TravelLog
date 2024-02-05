@@ -5,19 +5,17 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../utils/mutations';
 
-import Auth from '../utils/auth'
-
+import Auth from '../utils/auth';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setError] = useState('');
 
   const [login, { loading, error }] = useMutation(LOGIN_USER, {
     onCompleted: (data) => {
-      localStorage.setItem('token', data.login.token);
-      navigate('/map'); // Adjust the navigation target as needed
+      Auth.login(data.login.token);
     },
     onError: (error) => {
       setError(error.message);
@@ -27,12 +25,12 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
   
-    if (!username.trim() || !password.trim()) {
-      setError('Username and password cannot be empty.');
+    if (!email.trim() || !password.trim()) {
+      setError('Email and password cannot be empty.');
       return;
     }    
 
-    login({ variables: { email: username, password } });
+    login({ variables: { email, password } });
   };
 
   return (
@@ -44,28 +42,23 @@ const LoginPage = () => {
             {errorMsg || error.message}
           </Alert>
         )}
-        <Image 
-          src={TravelLogLogo} 
-          alt="Travel Log Logo" 
-          my="2"
-          w="100%"
-          maxW="600px"/>
-        <Input 
-          placeholder="Username" 
-          type="text"
+        <Image src={TravelLogLogo} alt="Travel Log Logo" my="2" w="100%" maxW="600px"/>
+        <Input
+          placeholder="Email"
+          type="email"
           my="1" 
           bg="#FFFFFF" 
           borderColor="#292F33" 
           borderRadius="full"
           w="100%"
           maxW="400px"
-          value={username}
+          value={email}
           onChange={(e) => {
-            setUsername(e.target.value);
+            setEmail(e.target.value);
             setError('');
           }}
         />
-        <Input 
+        <Input
           placeholder="Password" 
           type="password" 
           my="1" 
@@ -80,14 +73,14 @@ const LoginPage = () => {
             setError('');
           }}
         />
-        <Button 
+        <Button
           bg="#292F33" 
           color="#EBEBEB" 
           my="1"
           borderRadius="full"
           w="100%"
           maxW="400px" 
-          _hover={{ bg: "#898989" }} 
+          _hover={{ bg: "#898989" }}
           onClick={handleLogin}
           isLoading={loading}
         >

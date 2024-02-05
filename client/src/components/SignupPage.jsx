@@ -1,137 +1,125 @@
 import React, { useState } from 'react';
-import { Alert, AlertIcon, Image, Box, Flex, Input, Button, Text, Center } from '@chakra-ui/react';
+import { Alert, AlertIcon, Image, Flex, Input, Button, Center } from '@chakra-ui/react';
 import TravelLogLogo from '../assets/Images/TravelLog_Logo.png';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
+import { CREATE_USER } from '../utils/mutations';
+
+import Auth from '../utils/auth';
 
 const SignupPage = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const [error, setError] = useState('');
+  const [formState, setFormState] = useState({
+    username: '',
+    email: '',
+    password: ''
+  });
+  const [errorMsg, setError] = useState('');
 
-  // Add function to handle form submission here
-  const handleSubmit = async (e) => {
+  const [signup, { loading, error }] = useMutation(CREATE_USER, {
+    onCompleted: (data) => {
+      Auth.login(data.createUser.token);
+    },
+    onError: (error) => {
+      setError(error.message);
+    }
+  });
+
+  const handleSubmit = (e) => {
     e.preventDefault();
   
-    // Validate inputs
-    if (!username.trim()) {
-        setError('Username cannot be empty.');
-        return;
-    } else if (!/\S+@\S+\.\S+/.test(email) && location.pathname === '/signup') {
-        setError('Invalid email format.');
-        return;
-    } else if (!password.trim()) {
-        setError('Password cannot be empty.');
-        return;
+    if (!formState.username.trim() || !/\S+@\S+\.\S+/.test(formState.email) || !formState.password.trim()) {
+      setError('Please fill out all fields correctly.');
+      return;
     }    
-  
-    try {
-      // Make POST request to backend
-      const response = await fetch('/api/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password })
-      });
-  
-      const data = await response.json();
-      if (!response.ok) {
-        // Handle error - e.g., display an error message from the response
-        return;
-      }
 
-        // Store JWT received from the server
-        localStorage.setItem('token', data.token);
-
-        // Redirect to another page after successful signup
-        navigate('/login');
-    } catch (error) {
-      // Handle network error
-    }
+    signup({ variables: { ...formState } });
   };
-  
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormState({
+      ...formState,
+      [name]: value
+    });
+    setError(''); // Clear any errors when the user starts typing
+  };
 
   return (
     <Center bg="#EBEBEB" w="100vw" h="100vh">
       <Flex direction="column" align="center" justify="center">
-        {error && (
-            <Alert status="error">
-                <AlertIcon />
-                {error}
-            </Alert>
-        )}        
+        {errorMsg && (
+          <Alert status="error">
+            <AlertIcon />
+            {errorMsg}
+          </Alert>
+        )}
         <Image 
-            src={TravelLogLogo} 
-            alt="Travel Log Logo" 
-            my="2"
-            w="100%"
-            maxW="600px"/>
+          src={TravelLogLogo} 
+          alt="Travel Log Logo" 
+          my="2" 
+          w="100%" 
+          maxW="600px"/>
         <Input 
-            placeholder="Username"
-            type="text" 
-            my="1" 
-            bg="#FFFFFF" 
-            borderColor="#292F33" 
-            borderRadius="full"
-            w="100%"
-            maxW="400px"
-            value={username}
-            onChange={(e) => {
-                setUsername(e.target.value);
-                setError('');
-            }}         
-        />
-        <Input
-            placeholder="Email"
-            type="email" 
-            my="1" 
-            bg="#FFFFFF" 
-            borderColor="#292F33" 
-            borderRadius="full"
-            w="100%"
-            maxW="400px"
-            value={email}
-            onChange={(e) => {
-                setEmail(e.target.value);
-                setError('');
-            }}    
-        />
-        <Input
-            placeholder="Password" 
-            type="password" 
-            my="1" 
-            bg="#FFFFFF" 
-            borderColor="#292F33" 
-            borderRadius="full"
-            w="100%"
-            maxW="400px"
-            value={password}
-            onChange={(e) => {
-                setPassword(e.target.value);
-                setError('');
-            }}    
-        />
+          placeholder="Username" 
+          name="username"
+          type="text" 
+          my="1" 
+          bg="#FFFFFF" 
+          borderColor="#292F33" 
+          borderRadius="full" 
+          w="100%" 
+          maxW="400px" 
+          value={formState.username} 
+          onChange={handleChange} />
+        <Input 
+          placeholder="Email" 
+          name="email"
+          type="email" 
+          my="1" 
+          bg="#FFFFFF" 
+          borderColor="#292F33" 
+          borderRadius="full" 
+          w="100%" 
+          maxW="400px" 
+          value={formState.email} 
+          onChange={handleChange} />
+        <Input 
+          placeholder="Password" 
+          name="password"
+          type="password" 
+          my="1" 
+          bg="#FFFFFF" 
+          borderColor="#292F33" 
+          borderRadius="full" 
+          w="100%" 
+          maxW="400px" 
+          value={formState.password} 
+          onChange={handleChange} />
         <Button 
-            bg="#292F33" 
-            color="#EBEBEB" 
-            my="1" 
-            borderRadius="full"
-            w="100%"
-            maxW="400px"
-            _hover={{ bg: "#898989" }} 
-            onClick={ handleSubmit }>
-                Signup
+          bg="#292F33" 
+          color="#EBEBEB" 
+          my="1" 
+          borderRadius="full" 
+          w="100%" 
+          maxW="400px" 
+          _hover={{ bg: "#898989" }} 
+          onClick={handleSubmit} 
+          isLoading={loading}
+        >
+          Signup
         </Button>
         <Button 
-            bg="#292F33" 
-            color="#EBEBEB" 
-            my="1" 
-            borderRadius="full"
-            w="100%"
-            maxW="400px"
-            _hover={{ bg: "#898989" }} 
-            onClick={() => navigate('/')}>
-                Login
+          bg="#292F33" 
+          color="#EBEBEB" 
+          my="1" 
+          borderRadius="full" 
+          w="100%" 
+          maxW="400px" 
+          _hover={{ bg: "#898989" }} 
+          onClick={() => navigate('/')}
+        >
+          Login
         </Button>
       </Flex>
     </Center>

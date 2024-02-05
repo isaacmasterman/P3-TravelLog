@@ -64,11 +64,11 @@ const resolvers = {
         },
 
 
-        addLocation: async (parent, { listId, locationName }, context) => {
+        addLocation: async (parent, { listId, locationName, locationDescription, locationRating }, context) => {
             if (!context.user) {
                 throw AuthenticationError;
             }
-            if (rating < 0 || rating > 5) {
+            if (locationRating < 0 || locationRating > 5) {
                 throw new Error("Rating must be between 0 and 5");
             }
             return List.findOneAndUpdate(

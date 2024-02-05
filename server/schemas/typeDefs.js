@@ -39,8 +39,8 @@ const typeDefs = `
         deleteUser(_id: ID!): User
         login(email: String!, password: String!): AuthPayload
 
-        addLocation(name: String!, description: String, rating: Int): List
-        deleteLocation(listId: ID!, commentId: ID!): List
+        addLocation(listId: ID!, locationName: String!, locationDescription: String, locationRating: Int): List
+        deleteLocation(listId: ID!, locationId: ID!): List
 
         createList(listTitle: String!, listDescription: String): List
         deleteList(listId: ID!): List

@@ -5,19 +5,20 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { CREATE_USER } from '../utils/mutations';
 
-import Auth from '../utils/auth'
+import Auth from '../utils/auth';
 
 const SignupPage = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formState, setFormState] = useState({
+    username: '',
+    email: '',
+    password: ''
+  });
   const [errorMsg, setError] = useState('');
 
   const [signup, { loading, error }] = useMutation(CREATE_USER, {
     onCompleted: (data) => {
-      localStorage.setItem('token', data.createUser.token);
-      navigate('/login'); // Adjust the navigation target as needed
+      Auth.login(data.createUser.token);
     },
     onError: (error) => {
       setError(error.message);
@@ -27,12 +28,21 @@ const SignupPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
   
-    if (!username.trim() || !/\S+@\S+\.\S+/.test(email) || !password.trim()) {
+    if (!formState.username.trim() || !/\S+@\S+\.\S+/.test(formState.email) || !formState.password.trim()) {
       setError('Please fill out all fields correctly.');
       return;
     }    
 
-    signup({ variables: { username, email, password } });
+    signup({ variables: { ...formState } });
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormState({
+      ...formState,
+      [name]: value
+    });
+    setError(''); // Clear any errors when the user starts typing
   };
 
   return (
@@ -52,6 +62,7 @@ const SignupPage = () => {
           maxW="600px"/>
         <Input 
           placeholder="Username" 
+          name="username"
           type="text" 
           my="1" 
           bg="#FFFFFF" 
@@ -59,10 +70,11 @@ const SignupPage = () => {
           borderRadius="full" 
           w="100%" 
           maxW="400px" 
-          value={username} 
-          onChange={(e) => setUsername(e.target.value)} />
+          value={formState.username} 
+          onChange={handleChange} />
         <Input 
           placeholder="Email" 
+          name="email"
           type="email" 
           my="1" 
           bg="#FFFFFF" 
@@ -70,18 +82,20 @@ const SignupPage = () => {
           borderRadius="full" 
           w="100%" 
           maxW="400px" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} />
+          value={formState.email} 
+          onChange={handleChange} />
         <Input 
           placeholder="Password" 
+          name="password"
           type="password" 
-          my="1" bg="#FFFFFF" 
+          my="1" 
+          bg="#FFFFFF" 
           borderColor="#292F33" 
           borderRadius="full" 
           w="100%" 
           maxW="400px" 
-          value={password} 
-          onChange={(e) => setPassword(e.target.value)} />
+          value={formState.password} 
+          onChange={handleChange} />
         <Button 
           bg="#292F33" 
           color="#EBEBEB" 

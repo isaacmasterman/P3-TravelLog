@@ -4,6 +4,8 @@ import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@ap
 import { setContext } from '@apollo/client/link/context';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
+import GoogleMap from './components/googleMap'; 
+
 
 // HTTP connection to the GraphQL API
 const httpLink = createHttpLink({
@@ -32,6 +34,7 @@ const client = new ApolloClient({
 
 function App() {
   return (
+
     <ApolloProvider client={client}>
       <Router>
         <Routes>

@@ -8,7 +8,7 @@ const Navbar = () => {
     <Flex
       bg="#EBEBEB"
       px={4}
-      h="60px" // Adjust the height as needed
+      h="80px" // Adjust the height as needed
       alignItems="center"
       justifyContent="space-between"
     >

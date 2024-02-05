@@ -1,14 +1,17 @@
-import React from 'react';
-import MapContainer from './components/googleMap'; 
-const App = () => {
-  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+// import React from 'react';
+// import MapContainer from './components/googleMap';
 
-  return (
-    <div>
-      <h1>Travel Log</h1>
-      <MapContainer apiKey={apiKey} />
-    </div>
-  );
-};
+// const App = () => {
+//   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-export default App;
+//   return (
+//     <div>
+//       <h1>Travel Log</h1>
+//       <MapContainer apiKey={apiKey} />
+//       <SearchBox apiKey={apiKey} />
+//     </div>
+//   );
+// };
+
+// export default App;
+

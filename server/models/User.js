@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const {Schema, model } = require('mongoose');
+const mongoose = require('mongoose')
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
@@ -17,9 +18,16 @@ const userSchema = new mongoose.Schema({
     password: { 
         type: String, 
         required: true
-    }
+    },
+    lists: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'List'
+        }
+    ],
 }, 
 { timestamps: true }); // This adds createdAt and updatedAt fields
+
 
 userSchema.pre('save', function(next) {
     let user = this;

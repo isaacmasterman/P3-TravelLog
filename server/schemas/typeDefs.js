@@ -1,13 +1,13 @@
 const typeDefs = `
     type User {
-        userId: ID!
+        _id: ID!
         username: String!
         email: String!
         lists: [List]
     }
 
     type List {
-        listId: ID!
+        _id: ID!
         user: User!
         listTitle: String!
         listDescription: String
@@ -15,20 +15,20 @@ const typeDefs = `
     }
 
     type Location {
-        locationId: ID!
+        _id: ID!
         locationName: String!
         locationDescription: String
         locationRating: Int
     }
 
     type AuthPayload {
-        token: String!
+        token: ID!
         user: User
     }
 
     type Query {
         users: [User]
-        user(userId: ID!): User
+        user(username: String!): User
         lists: [List]
         list(listId: ID!): List
         me: User
@@ -36,15 +36,13 @@ const typeDefs = `
 
     type Mutation {
         createUser(username: String!, email: String!, password: String!): AuthPayload
-        updateUser(username: String, email: String, password: String): User
-        deleteUser(userId: ID!): User
+        deleteUser(_id: ID!): User
         login(email: String!, password: String!): AuthPayload
 
-        addLocation(name: String!, description: String, rating: Int, addedByUserId: ID): List
-        deleteLocation(locationId: ID!): List
+        addLocation(name: String!, description: String, rating: Int): List
+        deleteLocation(listId: ID!, commentId: ID!): List
 
-        createList(userId: ID!, title: String!, description: String): List
-        updateList(listId: ID!, title: String, description: String): List
+        createList(listTitle: String!, listDescription: String): List
         deleteList(listId: ID!): List
     
     }

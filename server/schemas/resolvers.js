@@ -3,11 +3,8 @@ const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
     Query: {
-        users: async (parent, args, context) => {
-            if (!context.user) {
-                throw AuthenticationError;
-            }
-            return await User.find({}).populate('lists');
+        users: async () => {
+            return await User.find().populate('lists');
         },
         user: async (parent, { userId }, context) => {
             if (!context.user) {
@@ -29,57 +26,44 @@ const resolvers = {
           },
     },
     Mutation: {
-        createUser: async (parent, { username, email, password }) => {
-            const user = await User.create({ username, email, password });
-            const token = signToken(user);
-
-            return { token, user };
+        createUser: async (parent, {username, email, password}, context) => {
+            try {
+                const user = await User.create({ username, email, password });
+                const token = signToken(user);
+                return { token, user };
+            } catch (error) {
+                console.error(error);
+                throw new Error('Error creating user');
+            }
         },
         login: async (parent, { email, password }) => {
             const user = await User.findOne({ email });
             if (!user) {
-                throw AuthenticationError;
+                throw new AuthenticationError;
             }
 
             const correctPassword = await user.isCorrectPassword(password);
 
             if (!correctPassword) {
-                throw AuthenticationError;
+                throw new AuthenticationError;
             }
 
             const token = signToken( user );
             return { token, user };
         },
-        updateUser: async (parent, { username, email, password }, context) => {
+        deleteUser: async (parent, { _id }, context) => {
             if (!context.user) {
                 throw AuthenticationError;
             }
-            let update = {};
-            if (username) update.username = username;
-            if (email) update.email = email;
-            if (newPassword) {
-                // Hash the new password before storing it
-                const saltRounds = 10; // Adjust salt rounds as needed
-                const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-                update.password = hashedPassword;
-            }
-            const userId = context.user.id;
-
-            // Update the user in the database
-            const updatedUser = await User.findByIdAndUpdate(userId, update, { new: true });
-
-            if (!updatedUser) {
+            const userToDelete = await User.findById(_id);
+            if (!userToDelete) {
                 throw new Error('User not found');
             }
+            await User.findByIdAndDelete(_id);
+            return userToDelete; // Return the user that was deleted
+        },
 
-            return updatedUser;
-        },
-        deleteUser: async (parent, { userId }, context) => {
-            if (!context.user) {
-                throw AuthenticationError;
-            }
-            return await User.findByIdAndDelete(userId);
-        },
+
         addLocation: async (parent, { listId, locationName }, context) => {
             if (!context.user) {
                 throw AuthenticationError;
@@ -116,16 +100,22 @@ const resolvers = {
                 { new: true }
             );
         },
-        createList: async (parent, { title, description }, context) => {
+
+
+        createList: async (parent, { listTitle, listDescription }, context) => {
             if (!context.user) {
                 throw AuthenticationError;
             }
-            const list = List.create({ title, description });
-            await User.findOneAndUpdate(
-                { _id: context.user._id },
-                { $addToSet: { lists: list._id } }
-            );
-            return list;  
+                const list = List.create({ 
+                    listTitle, 
+                    listDescription, 
+                    userId: context.user._id 
+                });
+                await User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $addToSet: { lists: list._id } }
+                );
+                return list; 
         },
         deleteList: async (parent, { listId }, context) => {
             if (!context.user) {

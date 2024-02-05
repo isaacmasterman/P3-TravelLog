@@ -1,33 +1,29 @@
 const mongoose = require('mongoose');
 
 const ListSchema = new mongoose.Schema({
-    title: {
+    listTitle: {
         type: String,
         required: true
     },
-    description: {
+    listDescription: {
         type: String,
     },
     locations:[
         {
-            name: {
+            locationName: {
                 type: String,
                 required: true
             },
-            description: {
+            locationDescription: {
                 type: String
             },
-            rating: {
+            locationRating: {
                 type: Number,
                 min:0,
                 max: 5
             },
         }
     ],
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }
 })
 
 const List = mongoose.model('List', ListSchema);

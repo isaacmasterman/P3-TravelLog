@@ -2,19 +2,11 @@ import React, { useState } from 'react';
 import { Alert, AlertIcon, Image, Flex, Input, Button, Center } from '@chakra-ui/react';
 import TravelLogLogo from '../assets/Images/TravelLog_Logo.png';
 import { useNavigate } from 'react-router-dom';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from '../utils/mutations';
 
-const LOGIN_MUTATION = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      token
-      user {
-        username
-        email
-      }
-    }
-  }
-`;
+import Auth from '../utils/auth'
+
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -22,7 +14,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [errorMsg, setError] = useState('');
 
-  const [login, { loading, error }] = useMutation(LOGIN_MUTATION, {
+  const [login, { loading, error }] = useMutation(LOGIN_USER, {
     onCompleted: (data) => {
       localStorage.setItem('token', data.login.token);
       navigate('/map'); // Adjust the navigation target as needed

@@ -20,7 +20,6 @@ export const LOGIN_USER = gql`
             user {
                 userId
                 username
-                email
             }
         }
     }

@@ -4,13 +4,13 @@ import usePlacesAutocomplete, {
   getLatLng,
 } from "use-places-autocomplete";
 import {
-  Combobox,
-  ComboboxInput,
-  ComboboxPopover,
-  ComboboxList,
-  ComboboxOption,
-} from "@reach/combobox";
-import "@reach/combobox/styles.css";
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Box,
+  Icon,
+} from "@chakra-ui/react";
+import { SearchIcon } from '@chakra-ui/icons';
 
 const PlacesAutocomplete = ({ setSelected, panTo }) => {
     const {
@@ -40,26 +40,37 @@ const PlacesAutocomplete = ({ setSelected, panTo }) => {
       }
     };
   
-    return (
-      <Combobox onSelect={handleSelect}>
-        <ComboboxInput
+  return (
+    <Box position="absolute" left="50%" top="20%" transform="translateX(-50%)" width="90%" maxWidth="600px" zIndex="10">
+      <InputGroup>
+        <InputLeftElement
+          pointerEvents="none"
+          backgroundColor="292F33"
+          children={<Icon as={SearchIcon} color="gray.300" />}
+        />
+        <Input
           value={value}
           onChange={handleInput}
           disabled={!ready}
-          className="combobox-input"
-          placeholder="Search an address"
+          placeholder="Where will you explore next?"
+          size="lg"
+          borderRadius="full"
+          bg="292F33"
         />
-        <ComboboxPopover>
-          <ComboboxList>
-            {status === "OK" &&
-              data.map(({ place_id, description }) => (
-                <ComboboxOption key={place_id} value={description} />
-              ))}
-          </ComboboxList>
-        </ComboboxPopover>
-      </Combobox>
-    );
-  };
+      </InputGroup>
+      {status === "OK" && (
+        <Box backgroundColor="white" borderRadius="md" boxShadow="md" mt="1">
+          {data.map(({ place_id, description }) => (
+            <Box key={place_id} p="2" borderBottomWidth="1px" style={{ cursor: 'pointer' }} onClick={() => handleSelect(description)}>
+              {description}
+            </Box>
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
+};
   
-  export default PlacesAutocomplete;
+  
+export default PlacesAutocomplete;
 

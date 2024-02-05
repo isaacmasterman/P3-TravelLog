@@ -8,7 +8,7 @@ const Navbar = () => {
     <Flex
       bg="#EBEBEB"
       px={4}
-      h="64px" // Adjust the height as needed
+      h="80px" // Adjust the height as needed
       alignItems="center"
       justifyContent="space-between"
     >
@@ -32,6 +32,7 @@ const Navbar = () => {
         >
           Lists
         </Button>
+        <Divider orientation="vertical" borderColor="#292F33" h="30px" />
         <Button 
           as={Link} 
           to="/logout" 

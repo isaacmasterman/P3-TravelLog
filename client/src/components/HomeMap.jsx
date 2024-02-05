@@ -13,6 +13,7 @@ import {
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
 import Map from './map';
+import Navbar from './Navbar';
 
 export default function HomeMap() {
   const { isLoaded } = useLoadScript({
@@ -21,6 +22,11 @@ export default function HomeMap() {
   });
 
   if (!isLoaded) return <div>Loading...</div>;
-  return <Map />;
+  return (
+    <>
+      <Navbar />
+      <Map />
+    </>
+  );
 }
 

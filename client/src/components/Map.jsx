@@ -1,159 +1,87 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react'; // Added useEffect import here
 import PlacesAutocomplete from './placesAutocomplete';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
-const containerStyle = {
-  width: '1600px',
-  height: '800px'
-};
+const NAVBAR_HEIGHT = '80px'; // Adjust based on actual navbar height
 
 const center = {
-  lat: -3.745,
-  lng: -38.523
+  lat: 0, // Corrected Latitude for Rome
+  lng: 0  // Corrected Longitude for Rome
 };
 
 function Map() {
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: "AIzaSyDIuxBMcKkqEuKFRKztTtkIWXX6gnt-Lf4"
-      })
+    });
     
-      const [map, setMap] = React.useState(null)
-    
-      const onLoad = React.useCallback(function callback(map) {
-        const bounds = new window.google.maps.LatLngBounds(center);
-        map.fitBounds(bounds);
-    
-        setMap(map)
-      }, [])
-    
-      const onUnmount = React.useCallback(function callback(map) {
-        setMap(null)
-      }, [])
+    const [mapHeight, setMapHeight] = useState(`calc(100vh - ${NAVBAR_HEIGHT})`);
 
-    // const center = useMemo(() => ({ lat: 43.45, lng: -80.49 }), []);
+    // Adjust map height dynamically if needed
+    useEffect(() => {
+        function updateMapHeight() {
+            setMapHeight(`calc(100vh - ${NAVBAR_HEIGHT})`);
+        }
+
+        window.addEventListener('resize', updateMapHeight);
+        return () => window.removeEventListener('resize', updateMapHeight);
+    }, []);
+
+    const [map, setMap] = useState(null);
+
+    const onLoad = useCallback(function callback(map) {
+        map.setCenter(center);
+        map.setZoom(2);
+        setMap(map);
+    }, []);
+
+    const onUnmount = useCallback(function callback(map) {
+        setMap(null);
+    }, []);
+
     const [selected, setSelected] = useState(null);
-    
+
     const panTo = useCallback(({ lat, lng }) => {
         if (map) {
-          map.panTo({ lat, lng });
-          map.setZoom(15); // You can adjust the zoom level as needed
+            map.panTo({ lat, lng });
+            map.setZoom(13); // You can adjust the zoom level as needed
         }
-      }, [map]);
-    
-      const something = useCallback((value) => {
+    }, [map]);
+
+    const something = useCallback((value) => {
         console.log(value);
         setSelected(value);
         panTo(value);
-      }, [panTo]);
-    
-      return isLoaded ? (
+    }, [panTo]);
+
+    const containerStyle = {
+        width: '100vw',
+        height: mapHeight // Use the dynamic height here
+    };
+
+    return isLoaded ? (
         <>
-          <div className="places-container">
-            <PlacesAutocomplete
-              something={something}
-              setSelected={setSelected}
-              panTo={panTo}
-            />
-          </div>
-    
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={10}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-          >
-            {selected && <Marker position={selected} />}
-          </GoogleMap>
+            <div className="places-container">
+                <PlacesAutocomplete
+                    something={something}
+                    setSelected={setSelected}
+                    panTo={panTo}
+                />
+            </div>
+
+            <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={center}
+                zoom={13}
+                onLoad={onLoad}
+                onUnmount={onUnmount}
+            >
+                {selected && <Marker position={selected} />}
+            </GoogleMap>
         </>
-      ) : (
+    ) : (
         <></>
-      );
-    }
-    
-    export default React.memo(Map);
+    );
+}
 
-// // This one i was experimenting with to display the Card.
-// import React, { useState } from 'react';
-// import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
-// import PlacesAutocomplete from './placesAutocomplete';
-// import PlaceComponent from './PlaceComponent';
-
-// const Map = () => {
-//   const { isLoaded } = useJsApiLoader({
-//     id: 'google-map-script',
-//     googleMapsApiKey: "AIzaSyDIuxBMcKkqEuKFRKztTtkIWXX6gnt-Lf4"
-//   });
-
-//   const [map, setMap] = useState(null);
-//   const [selectedPlace, setSelectedPlace] = useState(null);
-
-//   const onLoad = React.useCallback(function callback(map) {
-//     setMap(map);
-//   }, []);
-
-//   const onUnmount = React.useCallback(function callback() {
-//     setMap(null);
-//   }, []);
-
-//   const handlePlaceSelect = place => {
-//     setSelectedPlace(place);
-//   };
-
-//   const panTo = ({ lat, lng }) => {
-//     if (map) {
-//       map.panTo({ lat, lng });
-//       map.setZoom(15);
-//     }
-//   };
-
-//   const handleMarkerClick = (place) => {
-//     setSelectedPlace(place);
-//   };
-
-//   return isLoaded ? (
-//     <>
-//       <div className="places-container">
-//         <PlacesAutocomplete setSelected={handlePlaceSelect} panTo={panTo} />
-//       </div>
-
-//       <GoogleMap
-//         mapContainerStyle={{
-//           width: '1600px',
-//           height: '800px',
-//         }}
-//         center={{
-//           lat: -3.745,
-//           lng: -38.523,
-//         }}
-//         zoom={10}
-//         onLoad={onLoad}
-//         onUnmount={onUnmount}
-//       >
-//         {/* Your markers */}
-//         {/* Example: */}
-//         <Marker
-//           position={{ lat: -3.75, lng: -38.52 }}
-//           onClick={() => handleMarkerClick({ lat: -3.75, lng: -38.52, place_id: 'examplePlaceId' })}
-//         />
-
-//         {/* Display InfoWindow if a place is selected */}
-//         {selectedPlace && (
-//           <InfoWindow
-//             position={selectedPlace}
-//             onCloseClick={() => setSelectedPlace(null)}
-//           >
-//             <div style={{ width: '300px', height: '300px' }}>
-//               <PlaceComponent placeId={selectedPlace.place_id} />
-//             </div>
-//           </InfoWindow>
-//         )}
-//       </GoogleMap>
-//     </>
-//   ) : (
-//     <div>Loading...</div>
-//   );
-// };
-
-// export default React.memo(Map);
+export default React.memo(Map);

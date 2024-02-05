@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'; // Added useEffect import here
-import PlacesAutocomplete from './placesAutocomplete';
+import PlacesAutocomplete from './PlacesAutocomplete';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
 const NAVBAR_HEIGHT = '80px'; // Adjust based on actual navbar height
 
 const center = {
-  lat: 0, // Corrected Latitude for Rome
-  lng: 0  // Corrected Longitude for Rome
+  lat: 0, 
+  lng: 0  
 };
 
 function Map() {

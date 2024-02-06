@@ -32,6 +32,8 @@ const PlacesAutocomplete = ({ setSelected, panTo, onSelectPlace }) => {
       try {
         console.log("Geocoding address:", address);
         const results = await getGeocode({ address });
+        console.log(results)
+        localStorage.setItem("results", results[0].place_id);
         const { lat, lng } = await getLatLng(results[0]);
         console.log("Geocode success:", { lat, lng });
         const selectedLocation = { lat, lng };

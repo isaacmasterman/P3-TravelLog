@@ -1,14 +1,12 @@
 import React, { useState, useMemo, useCallback, useEffect, useContext } from 'react';
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
-import usePlacesAutocomplete, {
-  getGeocode,
-  getLatLng,
-} from "use-places-autocomplete";
+import usePlacesAutocomplete from "use-places-autocomplete";
 import "@reach/combobox/styles.css";
 import Map from './Map';
 import Navbar from './Navbar';
 import ListComponent from './listsComponent';
 import PlacesAutocomplete from './PlacesAutocomplete';
+
 import PlaceCard from './PlaceCard';
 import usePlaceDetails from '../utils/usePlaceDetails';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
@@ -23,28 +21,39 @@ export default function HomeMap() {
   const { isDrawerOpen, toggleDrawer } = useDrawerContext()
 
   const handleSelectPlace = (place) => {
-    console.log("Selected Place ID:", place.place_id);
-    setSelectedPlaceId(place.place_id);
+    if (place && place.place_id && place.place_id !== selectedPlaceId) {
+      console.log("Selected Place ID:", place.place_id);
+      setSelectedPlaceId(place.place_id);
+    }
   };
 
   if (!isLoaded) return <div>Loading...</div>;
   return (
     <>
-    <Navbar />
+
+      <Navbar />
     {isDrawerOpen && <ListComponent />}
     <Flex direction="row" height={`calc(100vh - 80px)`}>
         <Box flex="1" overflowY="auto" >
-          {placeDetails && <PlaceCard placeData={placeDetails} />}
+          {placeDetails && <PlaceCard placeData={placeDetails} />
+      <Flex direction="row" height={`calc(100vh - 80px)`}>
+        <Box flex="1" overflowY="auto">
+          {placeDetails && (
+            <>
+              {console.log("PlaceDetails structure:", placeDetails)}
+              <PlaceCard placeData={placeDetails} />
+            </>
+          )}
+
         </Box>
-      <Box flex="3">
-        <PlacesAutocomplete onSelectPlace={handleSelectPlace} />
-        <Map />
-        {isLoading && <Spinner />}
-        {error && <Text color="red.500">{error}</Text>}
-      </Box>
-    </Flex>
-  </>
-);
+
+        <Box flex="3">
+          <PlacesAutocomplete onSelectPlace={handleSelectPlace} />
+          <Map />
+          {isLoading && <Spinner />}
+          {error && <Text color="red.500">{error}</Text>}
+        </Box>
+      </Flex>
+    </>
+  );
 }
-
-

@@ -6,7 +6,6 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 import "@reach/combobox/styles.css";
 import Map from './Map';
-import lists from './listsComponent'
 import Navbar from './Navbar';
 import PlacesAutocomplete from './PlacesAutocomplete';
 import PlaceCard from './PlaceCard';

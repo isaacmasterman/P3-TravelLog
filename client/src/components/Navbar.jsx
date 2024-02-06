@@ -1,9 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Flex, Image, Button, Divider } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import TravelLogLogo from '../assets/Images/TravelLog_Logo.png'; // Make sure the path is correct
 
 const Navbar = () => {
+  const navigate = useNavigate(); // Initialize navigate function
+
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Remove the token from localStorage
+    navigate('/'); // Redirect to the homepage or login page after logout
+    // If using Apollo Client, consider resetting the store here
+    // e.g., client.resetStore() or client.clearStore()
+  };
   return (
     <Flex
       bg="#EBEBEB"
@@ -35,11 +44,10 @@ const Navbar = () => {
         </Button>
         <Divider orientation="vertical" borderColor="#292F33" h="30px" />
         <Button 
-          as={Link} 
-          to="/logout" 
           color="#292F33"
           variant="ghost"
           _hover={{ bg: "#f0f0f0" }}
+          onClick={handleLogout}
         >
           Logout
         </Button>

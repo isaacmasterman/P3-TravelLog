@@ -19,6 +19,14 @@ const typeDefs = `
         locationName: String!
         locationDescription: String
         locationRating: Int
+        summary: String
+        photos: [Photos]
+        address: String
+    }
+
+    type Photos {
+        url: String
+        description: String
     }
 
     type AuthPayload {

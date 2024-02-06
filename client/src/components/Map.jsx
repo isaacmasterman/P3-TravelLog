@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerCloseButton, DrawerBody } from '@chakra-ui/react';
-import PlacesAutocomplete from './placesAutocomplete';
+import PlacesAutocomplete from './PlacesAutocomplete';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import PlaceComponent from './PlaceComponent';
 import { Button, ButtonGroup } from '@chakra-ui/react'

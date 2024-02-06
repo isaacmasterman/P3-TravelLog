@@ -40,6 +40,7 @@ function App() {
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/map" element={<HomeMap />} />
+          
           {/* Add other routes as needed */}
         </Routes>
       </Router>

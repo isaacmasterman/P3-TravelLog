@@ -17,6 +17,7 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
-    "@reach/combobox": "^0.18.0"
+    "@reach/combobox": "^0.18.0",
+    "@react-google-maps/api": "^2.19.2"
   }
 }

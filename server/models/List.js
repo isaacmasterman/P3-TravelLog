@@ -3,10 +3,17 @@ const mongoose = require('mongoose');
 const ListSchema = new mongoose.Schema({
     listTitle: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     listDescription: {
         type: String,
+        trim: true
+    },
+    owner: {
+        type: String,
+        trim: true,
+        required: true
     },
     locations: [
         {
@@ -22,20 +29,20 @@ const ListSchema = new mongoose.Schema({
                 min: 0,
                 max: 5
             },
-            summary: {
-                type: String,
-            },
-            photos: [
-                {
-                    url: String,
-                    description: String
-                }
-            ],
-            address: {
-                type: String,
-            }
+            // summary: {
+            //     type: String,
+            // },
+            // photos: [
+            //     {
+            //         url: String,
+            //         description: String
+            //     }
+            // ],
+            // address: {
+            //     type: String,
+            // }
         }
-    ],
+    ]
 });
 
 

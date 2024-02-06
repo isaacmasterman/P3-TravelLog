@@ -15,7 +15,7 @@ const center = {
 };
 
 const Map = () => {
-  const apiKey = "AIzaSyDIuxBMcKkqEuKFRKztTtkIWXX6gnt-Lf4"; // Replace with your actual API key
+  const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: apiKey

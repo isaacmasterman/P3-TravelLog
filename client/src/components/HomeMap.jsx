@@ -1,4 +1,3 @@
-// Import statements
 import React, { useState, useEffect } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
@@ -8,13 +7,15 @@ import Navbar from './Navbar';
 import ListComponent from './listsComponent';
 import PlacesAutocomplete from './PlacesAutocomplete';
 import Map from './Map';
+
 import PlaceCard from './PlaceCard';
 import usePlaceDetails from '../utils/usePlaceDetails';
 import { useDrawerContext } from './DrawerContext';
 
 // Google Maps libraries
 const libraries = ["places"];
-const apiKey = "AIzaSyDIuxBMcKkqEuKFRKztTtkIWXX6gnt-Lf4";
+const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
+
 
 export default function HomeMap() {
   const { isLoaded } = useLoadScript({ googleMapsApiKey: apiKey, libraries });

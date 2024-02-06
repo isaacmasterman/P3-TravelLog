@@ -29,7 +29,7 @@ export const LOGIN_USER = gql`
 export const DELETE_USER = gql`
     mutation deleteUser($userId: ID!) {
         deleteUser(userId: $userId) {
-            userId
+            _id
         }
     }
 `;
@@ -37,9 +37,9 @@ export const DELETE_USER = gql`
 export const ADD_LOCATION = gql`
     mutation addLocation($listId: ID!, $locationName: String!, $locationDescription: String, $locationRating: Int) {
         addLocation(listId: $listId, locationName: $locationName, locationDescription: $locationDescription, locationRating: $locationRating) {
-            listId
+            _id
             locations {
-                locationId
+                _id
                 locationName
                 locationDescription
                 locationRating
@@ -51,18 +51,18 @@ export const ADD_LOCATION = gql`
 export const DELETE_LOCATION = gql`
     mutation deleteLocation($listId: ID!, $locationId: ID!) {
         deleteLocation(listId: $listId, locationId: $locationId) {
-            listId
+            _id
             locations {
-                locationId
+                _id
             }
         }
     }
 `;
 
 export const CREATE_LIST = gql`
-    mutation createList($title: String!, $description: String) {
-        createList(title: $title, description: $description) {
-            listId
+    mutation createList($listTitle: String!, $listDescription: String) {
+        createList(listTitle: $listTitle, listDescription: $listDescription) {
+            _id
             listTitle
             listDescription
         }

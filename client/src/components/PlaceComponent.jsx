@@ -8,7 +8,7 @@ const PlaceComponent = ({ placeId, apiKey }) => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=AIzaSyDIuxBMcKkqEuKFRKztTtkIWXX6gnt-Lf4`);
+        const response = await fetch(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}`);
 
         if (!response.ok) {
           console.error(`Failed to fetch place details. Status: ${response.status}`);
@@ -38,7 +38,7 @@ const PlaceComponent = ({ placeId, apiKey }) => {
       <p>{placeDetails.description || 'No description available'}</p>
       {hasPhotos && (
         <img
-          src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photo_reference=${placeDetails.photos[0].photo_reference}&key=AIzaSyDIuxBMcKkqEuKFRKztTtkIWXX6gnt-Lf4`}
+          src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photo_reference=${placeDetails.photos[0].photo_reference}&key=${import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}`}
           alt="Place Photo"
           style={{ maxWidth: '100%', maxHeight: '100%' }}
         />

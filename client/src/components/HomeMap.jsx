@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useEffect, useContext } from 're
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
 import usePlacesAutocomplete from "use-places-autocomplete";
 import "@reach/combobox/styles.css";
-import Map from './Map';
+import Map from './map';
 import Navbar from './Navbar';
 import ListComponent from './listsComponent';
 import PlacesAutocomplete from './placesAutocomplete';
@@ -12,7 +12,8 @@ import usePlaceDetails from '../utils/usePlaceDetails';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
 import { useDrawerContext } from './DrawerContext';
 const libraries = ["places"];
-const apiKey = "AIzaSyDIuxBMcKkqEuKFRKztTtkIWXX6gnt-Lf4";
+const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
+
 
 export default function HomeMap() {
   const { isLoaded } = useLoadScript({ googleMapsApiKey: apiKey, libraries });

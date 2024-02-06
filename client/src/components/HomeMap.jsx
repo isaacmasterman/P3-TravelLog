@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useContext } from 'react';
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
 import usePlacesAutocomplete, {
   getGeocode,
@@ -7,11 +7,12 @@ import usePlacesAutocomplete, {
 import "@reach/combobox/styles.css";
 import Map from './Map';
 import Navbar from './Navbar';
+import ListComponent from './listsComponent';
 import PlacesAutocomplete from './PlacesAutocomplete';
 import PlaceCard from './PlaceCard';
 import usePlaceDetails from '../utils/usePlaceDetails';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';
-
+import { useDrawerContext } from './DrawerContext';
 const libraries = ["places"];
 const apiKey = "AIzaSyDIuxBMcKkqEuKFRKztTtkIWXX6gnt-Lf4";
 
@@ -19,6 +20,7 @@ export default function HomeMap() {
   const { isLoaded } = useLoadScript({ googleMapsApiKey: apiKey, libraries });
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
   const { placeDetails, isLoading, error } = usePlaceDetails(selectedPlaceId, apiKey);
+  const { isDrawerOpen, toggleDrawer } = useDrawerContext()
 
   const handleSelectPlace = (place) => {
     console.log("Selected Place ID:", place.place_id);
@@ -29,6 +31,7 @@ export default function HomeMap() {
   return (
     <>
     <Navbar />
+    {isDrawerOpen && <ListComponent />}
     <Flex direction="row" height={`calc(100vh - 80px)`}>
         <Box flex="1" overflowY="auto" >
           {placeDetails && <PlaceCard placeData={placeDetails} />}

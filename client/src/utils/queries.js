@@ -3,15 +3,15 @@ import { gql } from '@apollo/client';
 export const GET_USERS = gql`
     query {
         users {
-            userId
+            _id
             username
             email
             lists {
-                listId
+                _id
                 listTitle
                 listDescription
                 locations {
-                    locationId
+                    _id
                     locationName
                     locationDescription
                     locationRating
@@ -24,15 +24,15 @@ export const GET_USERS = gql`
 export const GET_USER = gql`
     query getUser($userId: ID!) {
         user(userId: $userId) {
-            userId
+            _id
             username
             email
             lists {
-                listId
+                _id
                 listTitle
                 listDescription
                 locations {
-                    locationId
+                    _id
                     locationName
                     locationDescription
                     locationRating
@@ -43,26 +43,20 @@ export const GET_USER = gql`
 `;
 
 export const GET_LISTS = gql`
-    query {
+    query getlists{
         lists {
-            listId
+            _id
             listTitle
             listDescription
             user {
-                userId
+                _id
                 username
             }
             locations {
-                locationId
+                _id
                 locationName
                 locationDescription
                 locationRating
-                summary
-                address
-                photos {
-                    url
-                    description
-                }
             }
         }
     }
@@ -71,24 +65,18 @@ export const GET_LISTS = gql`
 export const GET_LIST = gql`
     query getList($listId: ID!) {
         list(listId: $listId) {
-            listId
+            _id
             listTitle
             listDescription
             user {
-                userId
+                _id
                 username
             }
             locations {
-                locationId
+                _id
                 locationName
                 locationDescription
                 locationRating
-                summary
-                address
-                photos {
-                    url
-                    description
-                }
             }
         }
     }
@@ -97,24 +85,18 @@ export const GET_LIST = gql`
 export const GET_ME = gql`
     query {
         me {
-            userId
+            _id
             username
             email
             lists {
-                listId
+                _id
                 listTitle
                 listDescription
                 locations {
-                    locationId
+                    _id
                     locationName
                     locationDescription
                     locationRating
-                    summary
-                    address
-                    photos {
-                        url
-                        description
-                    }
                 }
             }
         }

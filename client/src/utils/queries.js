@@ -57,6 +57,12 @@ export const GET_LISTS = gql`
                 locationName
                 locationDescription
                 locationRating
+                summary
+                address
+                photos {
+                    url
+                    description
+                }
             }
         }
     }
@@ -77,6 +83,12 @@ export const GET_LIST = gql`
                 locationName
                 locationDescription
                 locationRating
+                summary
+                address
+                photos {
+                    url
+                    description
+                }
             }
         }
     }
@@ -97,6 +109,12 @@ export const GET_ME = gql`
                     locationName
                     locationDescription
                     locationRating
+                    summary
+                    address
+                    photos {
+                        url
+                        description
+                    }
                 }
             }
         }

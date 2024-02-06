@@ -8,7 +8,7 @@ const ListSchema = new mongoose.Schema({
     listDescription: {
         type: String,
     },
-    locations:[
+    locations: [
         {
             locationName: {
                 type: String,
@@ -19,12 +19,25 @@ const ListSchema = new mongoose.Schema({
             },
             locationRating: {
                 type: Number,
-                min:0,
+                min: 0,
                 max: 5
             },
+            summary: {
+                type: String,
+            },
+            photos: [
+                {
+                    url: String,
+                    description: String
+                }
+            ],
+            address: {
+                type: String,
+            }
         }
     ],
-})
+});
+
 
 const List = mongoose.model('List', ListSchema);
 

@@ -38,6 +38,7 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
+
         <DrawerProvider> {/* This should wrap all Routes if the drawer context is used globally */}
           <Routes>
             <Route path="/" element={<LoginPage />} />

@@ -6,6 +6,7 @@ import Map from './Map';
 import Navbar from './Navbar';
 import ListComponent from './listsComponent';
 import PlacesAutocomplete from './placesAutocomplete';
+
 import PlaceCard from './PlaceCard';
 import usePlaceDetails from '../utils/usePlaceDetails';
 import { Box, Flex, Spinner, Text } from '@chakra-ui/react';

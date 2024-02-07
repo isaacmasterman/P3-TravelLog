@@ -11,8 +11,9 @@ import { DrawerProvider } from './components/DrawerContext';
 
 // HTTP connection to the GraphQL API
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000/graphql',
+  uri: import.meta.env.VITE_GRAPHQL_URI || 'http://localhost:4000/graphql',
 });
+
 
 // Middleware for setting the auth token with each request
 const authLink = setContext((_, { headers }) => {

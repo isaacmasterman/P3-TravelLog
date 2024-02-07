@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/mern-shopping');
+// Replace <password>, <dbname>, and any other necessary details in your actual MongoDB Atlas connection string
+const atlasUri = process.env.MONGODB_ATLAS_URI || 'mongodb+srv://isaacmasterman:13Robinln@cluster0.jeq224s.mongodb.net/?retryWrites=true&w=majority';
+
+mongoose.connect(atlasUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 module.exports = mongoose.connection;

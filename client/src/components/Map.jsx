@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerCloseButton, DrawerBody } from '@chakra-ui/react';
+import { useQuery, useMutation } from '@apollo/client';
+import { Button, Select, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay } from '@chakra-ui/react';
 import PlacesAutocomplete from './PlacesAutocomplete';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import PlaceComponent from './PlaceComponent';
-import { Button, ButtonGroup } from '@chakra-ui/react'
-
+import { ADD_LOCATION } from '../utils/mutations';
+import { GET_LISTS } from '../utils/queries';
 
 
 const NAVBAR_HEIGHT = '80px'; // Adjust based on actual navbar height
@@ -21,15 +22,18 @@ const Map = () => {
     googleMapsApiKey: apiKey
   });
 
+  const { data: listData, loading: listLoading } = useQuery(GET_LISTS);
+  const [addLocation] = useMutation(ADD_LOCATION);
   const [mapHeight, setMapHeight] = useState(`calc(100vh - ${NAVBAR_HEIGHT})`);
   const [map, setMap] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [selectedList, setSelectedList] = useState('');
   const select = localStorage.getItem("results")
   console.log(select)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   console.log("Selected" + selected)
-
+  console.log('Selected object:', selected);
 
   useEffect(() => {
     function updateMapHeight() {
@@ -56,6 +60,26 @@ const Map = () => {
       map.setZoom(13);
     }
   }, [map]);
+
+  const handleAddLocation = async () => {
+    if (selected && selectedList) {
+      console.log('Select object:', select);
+      try {
+        await addLocation({
+          variables: {
+            listId: selectedList,
+            locationId: selected._id,
+            locationName: selected.address,
+            locationDescription: selected.locationDescription,
+          },
+        });
+        console.log('Location added successfully');
+        setIsDrawerOpen(false);
+      } catch (error) {
+        console.error('Error adding location:', error);
+      }
+    }
+  };
 
   const something = useCallback((value) => {
     console.log("Selected place:", value);  // Log selected place data
@@ -101,9 +125,20 @@ const Map = () => {
             <DrawerHeader>Place Details</DrawerHeader>
             <DrawerCloseButton />
             <DrawerBody>
-              <PlaceComponent placeId={select} />
-              <Button colorScheme='teal' size='md'>
-                Add
+            <PlaceComponent place={selected} />
+              {listLoading ? (
+                <div>Loading Lists...</div>
+              ) : (
+                <Select placeholder='Select list' value={selectedList} onChange={e => setSelectedList(e.target.value)} mb='4'>
+                  {listData.lists.map(list => (
+                    <option key={list._id} value={list._id}>
+                      {list.listTitle}
+                    </option>
+                  ))}
+                </Select>
+              )}
+              <Button colorScheme='teal' size='md' onClick={handleAddLocation}>
+                Add to List
               </Button>
             </DrawerBody>
           </DrawerContent>
